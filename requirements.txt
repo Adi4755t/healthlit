@@ -6,4 +6,4 @@ requests
 folium
 streamlit-folium
 SpeechRecognition
-pyaudio
+PyAudio==0.2.11
