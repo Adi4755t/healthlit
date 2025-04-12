@@ -4,7 +4,6 @@ import geocoder
 import requests
 import folium
 from streamlit_folium import st_folium
-import speech_recognition as sr
 
 # Configure Gemini API
 API_KEY = "AIzaSyDsiBNzEwhQUra6ory6MGhXH8wr01Tq8Cg"
@@ -156,31 +155,3 @@ with st.container():
                             st.error(f"Translation failed: {e}")
             else:
                 st.warning("No assistant response found to translate.")
-
-# Voice Assistant
-st.markdown("---")
-st.subheader("🎙️ Voice Assistant")
-if st.button("🎤 Start Listening"):
-    recognizer = sr.Recognizer()
-    mic = sr.Microphone()
-    with mic as source:
-        st.info("Listening... Speak now.")
-        audio = recognizer.listen(source, phrase_time_limit=5)
-        st.success("Processing...")
-
-    try:
-        query = recognizer.recognize_google(audio)
-        st.write(f"🗣️ You said: **{query}**")
-
-        response = model.generate_content(
-            f"The user asked: '{query}'. Respond in a helpful way, prioritizing health/nutrition if relevant."
-        )
-        answer = response.text
-        st.session_state.messages.append({"role": "user", "content": query})
-        st.session_state.messages.append({"role": "assistant", "content": answer})
-        st.markdown(answer)
-
-    except sr.UnknownValueError:
-        st.error("😕 Sorry, could not understand your voice.")
-    except sr.RequestError as e:
-        st.error(f"⚠️ Could not request results; {e}")
